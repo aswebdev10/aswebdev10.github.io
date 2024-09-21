@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-3">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#food-tab">Food</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#exercise-tab">Exercise</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#totals-tab">Totals</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <!-- Food Tab -->
+            <div id="food-tab" class="container tab-pane active"><br>
+                <h3>Food Intake</h3>
+                <form id="foodForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="foodDescription" class="form-label">Description</label>
+                            <input type="text" class="form-control form-control-sm" id="foodDescription"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="servingSize" class="form-label">Serving Size</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="servingSize" autocomplete="off"
+                                    step="0.001" required>
+                                <select id="servingUnit" class="form-select" required>
+                                    <option value=""></option>
+                                    <option value="servings">Servings</option>
+                                    <option value="pieces">Pieces</option>
+                                    <option value="package">Package</option>
+                                    <option value="ounces">Ounces</option>
+                                    <option value="grams">Grams</option>
+                                    <option value="cups">Cups</option>
+                                    <option value="milliliters">Milliliters</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="caloriesPerServing" class="form-label">Calories per Serving</label>
+                            <input type="number" class="form-control form-control-sm" id="caloriesPerServing"
+                                autocomplete="off" step="0.1" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="numServings" class="form-label">Amount Had</label>
+                            <input type="number" class="form-control form-control-sm" id="numServings"
+                                autocomplete="off" step="0.001" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Add Food</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Table to display records -->
+                <div class="mt-5">
+                    <h3>Calorie Records</h3>
+                    <table class="table table-sm" id="calorieTable">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Calories</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <h4>Total Calories: <span id="totalCalories">0</span></h4>
+                    <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearModal">Clear Table</button>
+                </div>
+            </div>
+
+            <!-- Exercise Tab -->
+            <div id="exercise-tab" class="container tab-pane fade"><br>
+                <h3>Exercise</h3>
+                <form id="exerciseForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="exerciseName" class="form-label">Exercise</label>
+                            <input type="text" class="form-control form-control-sm" id="exerciseName" autocomplete="off"
+                                required>
+                        </div>
+                        <div class="col-12">
+                            <label for="caloriesLost" class="form-label">Calories Lost</label>
+                            <input type="number" class="form-control form-control-sm" id="caloriesLost"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Add Exercise</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="totals-tab" class="container tab-pane fade"><br>
+                <h3>Totals</h3>
+                <table class="table table-sm" id="totalsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Calories</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <h4>Total Calories: <span id="totalTotalCalories">0</span></h4>
+                <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearModal2">Clear Table</button>
+            </div>
+        </div>
+
+        <!-- Modal for editing records -->
+        <div class="modal fade" id="editCalorieModal" tabindex="-1" aria-labelledby="editCalorieModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editCalorieModalLabel">Edit Record</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editCalorieIndex">
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="editDescription">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCalories" class="form-label">Total Calories</label>
+                            <input type="number" class="form-control" id="editCalories">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editTotalsModal" tabindex="-1" aria-labelledby="editTotalsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTotalsModalLabel">Edit Record</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editTotalsIndex">
+                        <div class="mb-3">
+                            <label for="editDate" class="form-label">Date</label>
+                            <input type="text" class="form-control" id="editDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTotalCalories" class="form-label">Total Calories</label>
+                            <input type="number" class="form-control" id="editTotalCalories">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveEdit2">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for clear table confirmation -->
+        <div class="modal fade" id="clearCalorieModal" tabindex="-1" aria-labelledby="clearCalorieModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clearCalorieModalLabel">Clear Table Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to clear all records?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="clearTable">Clear Table</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="clearTotalsModal" tabindex="-1" aria-labelledby="clearTotalsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clearTotalsModalLabel">Clear Table Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to clear all records?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="clearTotalsTable">Clear Table</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for delete confirmation -->
+        <div class="modal fade" id="deleteCalorieModal" tabindex="-1" aria-labelledby="deleteCalorieModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteCalorieModalLabel">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this record?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteTotalsModal" tabindex="-1" aria-labelledby="deleteTotalsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteTotalsModalLabel">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this record?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete2">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let records = JSON.parse(localStorage.getItem('records')) || [];
+        let totalsRecords = JSON.parse(localStorage.getItem('totalsRecords')) || [];
+
+        function renderTable() {
+            const tableBody = document.querySelector('#calorieTable tbody');
+            tableBody.innerHTML = '';
+            let totalCalories = 0;
+
+            records.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${record.description}</td>
+                <td>${record.calories}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm edit-btn" data-index="${index}">Edit</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-index="${index}">Delete</button>
+                </td>
+            `;
+                tableBody.appendChild(row);
+                totalCalories += parseFloat(record.calories);
+            });
+
+            document.getElementById('totalCalories').innerText = totalCalories;
+            localStorage.setItem('records', JSON.stringify(records));
+        }
+
+        function renderTotalsTable() {
+            const totalsTableBody = document.querySelector('#totalsTable tbody');
+            totalsTableBody.innerHTML = '';
+            let totalTotalCalories = 0;
+
+            totalsRecords.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${record.date}</td>
+                <td>${record.totalCalories}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm edit-btn" data-index="${index}">Edit</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-index="${index}">Delete</button>
+                </td>
+            `;
+                totalsTableBody.appendChild(row);
+                totalTotalCalories += parseFloat(record.totalCalories);
+            });
+
+            document.getElementById('totalTotalCalories').innerText = totalTotalCalories;
+            localStorage.setItem('totalsRecords', JSON.stringify(totalsRecords));
+        }
+
+        document.getElementById('foodForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const foodDescription = document.getElementById('foodDescription').value;
+            const servingSize = parseFloat(document.getElementById('servingSize').value);
+            const caloriesPerServing = parseFloat(document.getElementById('caloriesPerServing').value);
+            const numServings = parseFloat(document.getElementById('numServings').value);
+            const servingUnit = document.getElementById('servingUnit').value;
+
+            const totalCalories = (caloriesPerServing * numServings) / servingSize;
+
+            records.push({
+                description: foodDescription.trim(),
+                calories: parseInt(totalCalories)
+            });
+
+            renderTable();
+            renderTotalsTable();
+            e.target.reset();
+        });
+
+        document.getElementById('exerciseForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const exerciseName = document.getElementById('exerciseName').value;
+            const caloriesLost = document.getElementById('caloriesLost').value;
+
+            records.push({
+                description: exerciseName.trim(),
+                calories: -caloriesLost
+            });
+
+            renderTable();
+            renderTotalsTable();
+            e.target.reset();
+
+            var foodTab = new bootstrap.Tab(document.querySelector('a[href="#food-tab"]'));
+            foodTab.show();
+        });
+
+        document.getElementById('calorieTable').addEventListener('click', function (e) {
+            if (e.target.classList.contains('delete-btn')) {
+                deleteIndex = e.target.getAttribute('data-index');
+                const modal = new bootstrap.Modal(document.getElementById('deleteCalorieModal'));
+                modal.show();
+            } else if (e.target.classList.contains('edit-btn')) {
+                const index = e.target.getAttribute('data-index');
+                const record = records[index];
+
+                document.getElementById('editCalorieIndex').value = index;
+                document.getElementById('editDescription').value = record.description;
+                document.getElementById('editCalories').value = record.calories;
+
+                const modal = new bootstrap.Modal(document.getElementById('editCalorieModal'));
+                modal.show();
+            }
+        });
+
+        document.getElementById('totalsTable').addEventListener('click', function (e) {
+            if (e.target.classList.contains('delete-btn')) {
+                deleteIndex = e.target.getAttribute('data-index');
+                const modal = new bootstrap.Modal(document.getElementById('deleteTotalsModal'));
+                modal.show();
+            } else if (e.target.classList.contains('edit-btn')) {
+                const index = e.target.getAttribute('data-index');
+                const record = totalsRecords[index];
+
+                document.getElementById('editTotalsIndex').value = index;
+                document.getElementById('editDate').value = record.date;
+                document.getElementById('editTotalCalories').value = record.totalCalories;
+
+                const modal = new bootstrap.Modal(document.getElementById('editTotalsModal'));
+                modal.show();
+            }
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            if (deleteIndex !== null) {
+                records.splice(deleteIndex, 1);
+                renderTable();
+                renderTotalsTable();
+                deleteIndex = null;
+            }
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteCalorieModal'));
+            modal.hide();
+        });
+
+        document.getElementById('confirmDelete2').addEventListener('click', function () {
+            if (deleteIndex !== null) {
+                totalsRecords.splice(deleteIndex, 1);
+                renderTable();
+                renderTotalsTable();
+                deleteIndex = null;
+            }
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteTotalsModal'));
+            modal.hide();
+        });
+
+        document.getElementById('saveEdit').addEventListener('click', function () {
+            const index = document.getElementById('editCalorieIndex').value;
+            const description = document.getElementById('editDescription').value;
+            const calories = document.getElementById('editCalories').value;
+
+            const updatedDescription = records[index].description;
+
+            records[index] = {
+                description: updatedDescription,
+                calories: parseInt(calories)
+            };
+
+            renderTable();
+            renderTotalsTable();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editCalorieModal'));
+            modal.hide();
+        });
+
+        document.getElementById('saveEdit2').addEventListener('click', function () {
+            const index = document.getElementById('editTotalsIndex').value;
+            const description = document.getElementById('editDate').value;
+            const calories = document.getElementById('editTotalCalories').value;
+
+            const updatedDescription = totalsRecords[index].date;
+
+            records[index] = {
+                date: updatedDescription,
+                totalCalories: parseInt(calories)
+            };
+
+            renderTable();
+            renderTotalsTable();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editCalorieModal'));
+            modal.hide();
+        });
+
+        document.getElementById('showClearModal').addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('clearCalorieModal'));
+            modal.show();
+        });
+
+        document.getElementById('showClearModal2').addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('clearTotalsModal'));
+            modal.show();
+        });
+
+        document.getElementById('clearTable').addEventListener('click', function () {
+            const totalCalories = document.getElementById('totalCalories').innerText;
+            const currentDate = new Date().toLocaleDateString();
+
+            totalsRecords.push({
+                date: currentDate,
+                totalCalories: totalCalories
+            });
+            localStorage.setItem('totalsRecords', JSON.stringify(totalsRecords));
+
+            renderTotalsTable();
+
+            records = [];
+            renderTable();
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('clearCalorieModal'));
+            modal.hide();
+        });
+
+
+        document.getElementById('clearTotalsTable').addEventListener('click', function () {
+            totalsRecords = [];
+            renderTotalsTable();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('clearTotalsModal'));
+            modal.hide();
+        });
+
+        renderTable();
+        renderTotalsTable();
+    </script>
+</body>
+
+</html>
