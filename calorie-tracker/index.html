@@ -40,20 +40,20 @@
                         </div>
                         <div class="col-6">
                             <label for="servingSize" class="form-label">Serving Size</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="servingSize" autocomplete="off"
-                                    step="0.001" required>
-                                <select id="servingUnit" class="form-select" required>
-                                    <option value=""></option>
-                                    <option value="servings">Servings</option>
-                                    <option value="pieces">Pieces</option>
-                                    <option value="package">Package</option>
-                                    <option value="ounces">Ounces</option>
-                                    <option value="grams">Grams</option>
-                                    <option value="cups">Cups</option>
-                                    <option value="milliliters">Milliliters</option>
-                                </select>
-                            </div>
+                            <input type="number" class="form-control form-control-sm" id="servingSize" autocomplete="off" step="0.001" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="servingUnit" class="form-label">Serving Unit</label>
+                            <select id="servingUnit" class="form-select form-select-sm" required>
+                                <option value=""></option>
+                                <option value="servings">Servings</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="package">Package</option>
+                                <option value="ounces">Ounces</option>
+                                <option value="grams">Grams</option>
+                                <option value="cups">Cups</option>
+                                <option value="milliliters">Milliliters</option>
+                            </select>
                         </div>
                         <div class="col-6">
                             <label for="caloriesPerServing" class="form-label">Calories per Serving</label>
@@ -65,7 +65,7 @@
                             <input type="number" class="form-control form-control-sm" id="numServings"
                                 autocomplete="off" step="0.001" required>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mt-5">
                             <button type="submit" class="btn btn-primary btn-sm w-100">Add Food</button>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             <input type="number" class="form-control form-control-sm" id="caloriesLost"
                                 autocomplete="off" required>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mt-5">
                             <button type="submit" class="btn btn-primary btn-sm w-100">Add Exercise</button>
                         </div>
                     </div>
@@ -136,20 +136,20 @@
                     <div class="row g-3">
                         <div class="col-6">
                             <label for="calcServingSize" class="form-label">Serving Size</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" id="calcServingSize" autocomplete="off"
-                                    step="0.001" required>
-                                <select id="calcServingUnit" class="form-select" required>
-                                    <option value=""></option>
-                                    <option value="servings">Servings</option>
-                                    <option value="pieces">Pieces</option>
-                                    <option value="package">Package</option>
-                                    <option value="ounces">Ounces</option>
-                                    <option value="grams">Grams</option>
-                                    <option value="cups">Cups</option>
-                                    <option value="milliliters">Milliliters</option>
-                                </select>
-                            </div>
+                            <input type="number" class="form-control form-control-sm" id="calcServingSize" autocomplete="off" step="0.001" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="calcServingUnit" class="form-label">Serving Unit</label>
+                            <select id="calcServingUnit" class="form-select form-select-sm" required>
+                                <option value=""></option>
+                                <option value="servings">Servings</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="package">Package</option>
+                                <option value="ounces">Ounces</option>
+                                <option value="grams">Grams</option>
+                                <option value="cups">Cups</option>
+                                <option value="milliliters">Milliliters</option>
+                            </select>
                         </div>
                         <div class="col-6">
                             <label for="calcCaloriesPerServing" class="form-label">Calories per Serving</label>
@@ -157,11 +157,11 @@
                                 autocomplete="off" step="0.1" required>
                         </div>
                         <div class="col-6">
-                            <label for="calcNumServings" class="form-label">Amount</label>
+                            <label for="numServings" class="form-label">Amount</label>
                             <input type="number" class="form-control form-control-sm" id="calcNumServings"
                                 autocomplete="off" step="0.001" required>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mt-5">
                             <button type="submit" class="btn btn-primary btn-sm w-100">Calculate</button>
                         </div>
                     </div>
@@ -547,7 +547,7 @@
 
             const totalCalories = (caloriesPerServing * numServings) / servingSize;
 
-            document.getElementById('calcTotalCalories').innerText = totalCalories;
+            document.getElementById('calcTotalCalories').innerText = parseInt(totalCalories);
 
             renderTable();
             renderTotalsTable();
