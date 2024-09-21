@@ -21,6 +21,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#totals-tab">Totals</a>
             </li>
+            <li class="nav-item"></li>
+            <a class="nav-link" data-bs-toggle="tab" href="#calc-tab">Calc</a>
+            </li>
         </ul>
 
         <!-- Tab panes -->
@@ -82,7 +85,7 @@
                         </tbody>
                     </table>
                     <h4>Total Calories: <span id="totalCalories">0</span></h4>
-                    <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearModal">Clear Table</button>
+                    <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearCalorieModal">Clear Table</button>
                 </div>
             </div>
 
@@ -108,6 +111,7 @@
                 </form>
             </div>
 
+            <!-- Totals Tab -->
             <div id="totals-tab" class="container tab-pane fade"><br>
                 <h3>Totals</h3>
                 <table class="table table-sm" id="totalsTable">
@@ -122,7 +126,49 @@
                     </tbody>
                 </table>
                 <h4>Total Calories: <span id="totalTotalCalories">0</span></h4>
-                <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearModal2">Clear Table</button>
+                <button class="btn btn-danger btn-sm w-100 mt-5" id="showClearTotalsModal">Clear Table</button>
+            </div>
+
+            <!-- Calc Tab -->
+            <div id="calc-tab" class="container tab-pane fade"><br>
+                <h3>Calculator</h3>
+                <form id="calcForm">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="calcServingSize" class="form-label">Serving Size</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="calcServingSize" autocomplete="off"
+                                    step="0.001" required>
+                                <select id="calcServingUnit" class="form-select" required>
+                                    <option value=""></option>
+                                    <option value="servings">Servings</option>
+                                    <option value="pieces">Pieces</option>
+                                    <option value="package">Package</option>
+                                    <option value="ounces">Ounces</option>
+                                    <option value="grams">Grams</option>
+                                    <option value="cups">Cups</option>
+                                    <option value="milliliters">Milliliters</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="calcCaloriesPerServing" class="form-label">Calories per Serving</label>
+                            <input type="number" class="form-control form-control-sm" id="calcCaloriesPerServing"
+                                autocomplete="off" step="0.1" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="calcNumServings" class="form-label">Amount</label>
+                            <input type="number" class="form-control form-control-sm" id="calcNumServings"
+                                autocomplete="off" step="0.001" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Calculate</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="mt-5">
+                    <h4>Total Calories: <span id="calcTotalCalories">0</span></h4>
+                </div>
             </div>
         </div>
 
@@ -148,7 +194,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+                        <button type="button" class="btn btn-primary" id="saveCalorieEdit">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -175,7 +221,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveEdit2">Save changes</button>
+                        <button type="button" class="btn btn-primary" id="saveTotalsEdit">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -234,7 +280,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                        <button type="button" class="btn btn-danger" id="confirmCalorieDelete">Delete</button>
                     </div>
                 </div>
             </div>
@@ -253,7 +299,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDelete2">Delete</button>
+                        <button type="button" class="btn btn-danger" id="confirmTotalsDelete">Delete</button>
                     </div>
                 </div>
             </div>
@@ -322,8 +368,13 @@
 
             const totalCalories = (caloriesPerServing * numServings) / servingSize;
 
+            const capitalizeDescription = foodDescription
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
             records.push({
-                description: foodDescription.trim(),
+                description: capitalizeDescription.trim(),
                 calories: parseInt(totalCalories)
             });
 
@@ -337,8 +388,13 @@
             const exerciseName = document.getElementById('exerciseName').value;
             const caloriesLost = document.getElementById('caloriesLost').value;
 
+            const capitalizeDescription = exerciseName
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
             records.push({
-                description: exerciseName.trim(),
+                description: capitalizeDescription.trim(),
                 calories: -caloriesLost
             });
 
@@ -386,7 +442,7 @@
             }
         });
 
-        document.getElementById('confirmDelete').addEventListener('click', function () {
+        document.getElementById('confirmCalorieDelete').addEventListener('click', function () {
             if (deleteIndex !== null) {
                 records.splice(deleteIndex, 1);
                 renderTable();
@@ -397,7 +453,7 @@
             modal.hide();
         });
 
-        document.getElementById('confirmDelete2').addEventListener('click', function () {
+        document.getElementById('confirmTotalsDelete').addEventListener('click', function () {
             if (deleteIndex !== null) {
                 totalsRecords.splice(deleteIndex, 1);
                 renderTable();
@@ -408,7 +464,7 @@
             modal.hide();
         });
 
-        document.getElementById('saveEdit').addEventListener('click', function () {
+        document.getElementById('saveCalorieEdit').addEventListener('click', function () {
             const index = document.getElementById('editCalorieIndex').value;
             const description = document.getElementById('editDescription').value;
             const calories = document.getElementById('editCalories').value;
@@ -426,30 +482,30 @@
             modal.hide();
         });
 
-        document.getElementById('saveEdit2').addEventListener('click', function () {
+        document.getElementById('saveTotalsEdit').addEventListener('click', function () {
             const index = document.getElementById('editTotalsIndex').value;
             const description = document.getElementById('editDate').value;
             const calories = document.getElementById('editTotalCalories').value;
 
             const updatedDescription = totalsRecords[index].date;
 
-            records[index] = {
+            totalsRecords[index] = {
                 date: updatedDescription,
                 totalCalories: parseInt(calories)
             };
 
             renderTable();
             renderTotalsTable();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editCalorieModal'));
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editTotalsModal'));
             modal.hide();
         });
 
-        document.getElementById('showClearModal').addEventListener('click', function () {
+        document.getElementById('showClearCalorieModal').addEventListener('click', function () {
             const modal = new bootstrap.Modal(document.getElementById('clearCalorieModal'));
             modal.show();
         });
 
-        document.getElementById('showClearModal2').addEventListener('click', function () {
+        document.getElementById('showClearTotalsModal').addEventListener('click', function () {
             const modal = new bootstrap.Modal(document.getElementById('clearTotalsModal'));
             modal.show();
         });
@@ -479,6 +535,60 @@
             renderTotalsTable();
             const modal = bootstrap.Modal.getInstance(document.getElementById('clearTotalsModal'));
             modal.hide();
+        });
+
+        document.getElementById('calcForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const servingSize = parseFloat(document.getElementById('calcServingSize').value);
+            const caloriesPerServing = parseFloat(document.getElementById('calcCaloriesPerServing').value);
+            const numServings = parseFloat(document.getElementById('calcNumServings').value);
+            const servingUnit = document.getElementById('calcServingUnit').value;
+
+            const totalCalories = (caloriesPerServing * numServings) / servingSize;
+
+            document.getElementById('calcTotalCalories').innerText = totalCalories;
+
+            renderTable();
+            renderTotalsTable();
+            e.target.reset();
+        });
+
+        function updateUnits(sizeInput, unitSelect) {
+            const isSingular = parseFloat(sizeInput.value) === 1;
+            const options = unitSelect.options;
+
+            for (let i = 0; i < options.length; i++) {
+                let option = options[i];
+                let text = option.value;
+
+                // Only update if there's a difference between singular and plural
+                if (text === "servings") {
+                    option.text = isSingular ? "Serving" : "Servings";
+                } else if (text === "pieces") {
+                    option.text = isSingular ? "Piece" : "Pieces";
+                } else if (text === "package") {
+                    option.text = isSingular ? "Package" : "Packages";
+                } else if (text === "ounces") {
+                    option.text = isSingular ? "Ounce" : "Ounces";
+                } else if (text === "grams") {
+                    option.text = isSingular ? "Gram" : "Grams";
+                } else if (text === "cups") {
+                    option.text = isSingular ? "Cup" : "Cups";
+                } else if (text === "milliliters") {
+                    option.text = isSingular ? "Milliliter" : "Milliliters";
+                }
+            }
+        }
+
+        // Event listener for food tab serving size input
+        document.getElementById('servingSize').addEventListener('input', function () {
+            updateUnits(this, document.getElementById('servingUnit'));
+        });
+
+        // Event listener for calc tab serving size input
+        document.getElementById('calcServingSize').addEventListener('input', function () {
+            updateUnits(this, document.getElementById('calcServingUnit'));
         });
 
         renderTable();
