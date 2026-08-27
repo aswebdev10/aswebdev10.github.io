@@ -518,7 +518,8 @@
     });
 
     // Touch reordering: hold briefly, then the task follows your finger.
-    let touchStartX=0, touchStartY=0, draggedByTouch=false;
+    // If scrolling/movement is detected first, reordering is disabled for that touch.
+    let touchStartX=0, touchStartY=0, draggedByTouch=false, touchScrollDetected=false;
 
     const updateGhost=(clientX,clientY)=>{
       if(!touchDrag || !touchDrag.ghost) return;
@@ -532,6 +533,7 @@
 
       if(!touchDrag || touchDrag.row!==row){
         if(Math.hypot(t.clientX-touchStartX,t.clientY-touchStartY)>9){
+          touchScrollDetected=true;
           clearTimeout(longPressTimer);
         }
         return;
@@ -581,9 +583,11 @@
       touchStartX=t.clientX;
       touchStartY=t.clientY;
       draggedByTouch=false;
+      touchScrollDetected=false;
       clearTimeout(longPressTimer);
 
       longPressTimer=setTimeout(()=>{
+        if(touchScrollDetected) return;
         const rect=row.getBoundingClientRect();
         const ghost=row.cloneNode(true);
         ghost.classList.remove("dragging","drag-source","drop-pop","completing");
