@@ -586,6 +586,12 @@
       touchScrollDetected=false;
       clearTimeout(longPressTimer);
 
+      // Start watching movement immediately, during the long-press delay.
+      // Any meaningful movement cancels reordering for this entire touch.
+      document.addEventListener("touchmove",onTouchMove,{passive:false});
+      document.addEventListener("touchend",finishTouch);
+      document.addEventListener("touchcancel",finishTouch);
+
       longPressTimer=setTimeout(()=>{
         if(touchScrollDetected) return;
         const rect=row.getBoundingClientRect();
@@ -616,10 +622,6 @@
         document.body.style.overflow="hidden";
         if(navigator.vibrate) navigator.vibrate(25);
         updateGhost(t.clientX,t.clientY);
-
-        document.addEventListener("touchmove",onTouchMove,{passive:false});
-        document.addEventListener("touchend",finishTouch);
-        document.addEventListener("touchcancel",finishTouch);
       },450);
     },{passive:true});
 
