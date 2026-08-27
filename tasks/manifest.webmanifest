@@ -1,6 +1,6 @@
 {
-  "name": "My Tasks",
-  "short_name": "My Tasks",
+  "name": "Tasks",
+  "short_name": "Tasks",
   "description": "A simple private task list stored on this device.",
   "id": "./",
   "start_url": "./",
