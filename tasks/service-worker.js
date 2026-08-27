@@ -1,4 +1,4 @@
-const CACHE_NAME = "my-tasks-v1";
+const CACHE_NAME = "tasks-v1";
 const APP_SHELL = [
   "./",
   "./index.html",
