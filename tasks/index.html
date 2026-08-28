@@ -262,6 +262,14 @@
   .task-row.drop-pop{
     animation:dropPop .24s ease;
   }
+  .section.completed-enter{
+    animation:completedEnter .28s cubic-bezier(.2,.8,.2,1);
+    transform-origin:top center;
+  }
+  @keyframes completedEnter{
+    0%{opacity:0;transform:translateY(12px) scale(.99)}
+    100%{opacity:1;transform:translateY(0) scale(1)}
+  }
   @keyframes dropPop{
     0%{transform:scale(.985)}
     60%{transform:scale(1.012)}
@@ -388,7 +396,8 @@
     return keys;
   }
 
-  function render(){
+  function render(options={}){
+    const hadCompletedSection = !!sectionsEl.querySelector('.section[data-key="__completed"]');
     sectionsEl.innerHTML = "";
     const keys = groupOrder();
 
@@ -413,6 +422,10 @@
       head.appendChild(title);
 
       if(key==="__completed"){
+        if(options.animateCompletedEntry && !hadCompletedSection){
+          sec.classList.add("completed-enter");
+          sec.addEventListener("animationend",()=>sec.classList.remove("completed-enter"),{once:true});
+        }
         const clear=document.createElement("button");
         clear.className="clear-btn";
         clear.textContent="Empty";
@@ -477,7 +490,7 @@
         task.completed=becomingCompleted;
         task.order=nextOrder(sectionKey(task));
         save();
-        render();
+        render({animateCompletedEntry:becomingCompleted});
         const moved=document.querySelector(`.task-row[data-id="${CSS.escape(task.id)}"]`);
         if(moved){
           moved.classList.add("drop-pop");
