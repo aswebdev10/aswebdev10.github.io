@@ -47,10 +47,12 @@
     position:relative;
     font-size:17px;
     line-height:30px;
-    color:var(--blue);
+    color:var(--muted);
     font-weight:600;
     white-space:nowrap;
+    cursor:pointer;
   }
+  .tab.active{color:var(--blue)}
   .tab::after{
     content:"";
     position:absolute;
@@ -59,7 +61,9 @@
     left:0;right:0;
     bottom:-13px;
     background:var(--blue);
+    display:none;
   }
+  .tab.active::after{display:block}
   .new-list{
     font-size:17px;
     line-height:30px;
@@ -300,7 +304,8 @@
 <div class="phone">
   <div class="topbar">
     <div class="star-logo" aria-hidden="true">★</div>
-    <div class="tab">Tasks</div>
+    <div class="tab active" data-tab="tasks">Tasks</div>
+    <div class="tab" data-tab="completed">Completed</div>
   </div>
 
   <main id="sections"></main>
@@ -343,6 +348,7 @@
   let editingId = null;
   let longPressTimer = null;
   let touchDrag = null;
+  let currentTab = "tasks";
 
   const localDateISO = (date = new Date()) => {
     const y = date.getFullYear();
@@ -389,10 +395,10 @@
   }
 
   function groupOrder(){
+    if(currentTab==="completed") return tasks.some(t=>t.completed) ? ["__completed"] : [];
     const dated = [...new Set(tasks.filter(t=>!t.completed && t.date).map(t=>t.date))].sort();
     const keys = [...dated];
     if(tasks.some(t=>!t.completed && !t.date)) keys.push("__nodate");
-    if(tasks.some(t=>t.completed)) keys.push("__completed");
     return keys;
   }
 
@@ -404,7 +410,9 @@
     if(!keys.length){
       const sec=document.createElement("section");
       sec.className="section";
-      sec.innerHTML='<div class="section-head"><h2 class="section-title today">Today</h2></div><div class="empty-note">No tasks yet.</div>';
+      sec.innerHTML=currentTab==="completed"
+        ? '<div class="section-head"><h2 class="section-title">Completed</h2></div><div class="empty-note">No completed tasks yet.</div>'
+        : '<div class="section-head"><h2 class="section-title today">Today</h2></div><div class="empty-note">No tasks yet.</div>';
       sectionsEl.appendChild(sec);
       return;
     }
@@ -691,6 +699,14 @@
     const task=tasks.find(t=>t.id===id);
     if(task) openModal(task);
   }
+
+  document.querySelectorAll(".tab").forEach(tab=>{
+    tab.addEventListener("click",()=>{
+      currentTab=tab.dataset.tab;
+      document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t===tab));
+      render();
+    });
+  });
 
   document.getElementById("addBtn").addEventListener("click",()=>openModal());
   document.getElementById("cancelBtn").addEventListener("click",closeModal);
