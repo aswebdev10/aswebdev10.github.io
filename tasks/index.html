@@ -23,7 +23,7 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
-  body{padding-bottom:max(28px, env(safe-area-inset-bottom))}
+  body{padding-bottom:0}
   button,input{font:inherit}
 
   .phone{
@@ -37,6 +37,10 @@
     height:72px;
     padding:22px 42px 0;
     display:flex;
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--bg);
     align-items:flex-start;
     gap:30px;
   }
