@@ -52,6 +52,7 @@
     white-space:nowrap;
     cursor:pointer;
   }
+  .tab.has-completed{color:#111}
   .tab.active{color:var(--blue)}
   .tab::after{
     content:"";
@@ -403,6 +404,12 @@
   }
 
   function render(options={}){
+    const completedCount = tasks.filter(t=>t.completed).length;
+    const completedTab = document.querySelector('.tab[data-tab="completed"]');
+    if(completedTab){
+      completedTab.textContent = `Completed (${completedCount})`;
+      completedTab.classList.toggle("has-completed", completedCount > 0);
+    }
     const hadCompletedSection = !!sectionsEl.querySelector('.section[data-key="__completed"]');
     sectionsEl.innerHTML = "";
     const keys = groupOrder();
@@ -411,7 +418,7 @@
       const sec=document.createElement("section");
       sec.className="section";
       sec.innerHTML=currentTab==="completed"
-        ? '<div class="section-head"><h2 class="section-title">Completed</h2></div><div class="empty-note">No completed tasks yet.</div>'
+        ? '<div class="section-head"><h2 class="section-title">Completed (0)</h2></div><div class="empty-note">No completed tasks yet.</div>'
         : '<div class="section-head"><h2 class="section-title today">Today</h2></div><div class="empty-note">No tasks yet.</div>';
       sectionsEl.appendChild(sec);
       return;
@@ -426,7 +433,7 @@
       head.className="section-head";
       const title=document.createElement("h2");
       title.className="section-title" + (key===localDateISO() ? " today":"");
-      title.textContent=dateLabel(key);
+      title.textContent = key === "__completed" ? `Completed (${tasks.filter(t=>t.completed).length})` : dateLabel(key);
       head.appendChild(title);
 
       if(key==="__completed"){
