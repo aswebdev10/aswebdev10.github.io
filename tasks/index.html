@@ -123,12 +123,12 @@
   }
   .task-list{padding:0 0 3px}
   .task-row{
-    min-height:42px;
+    min-height:58px;
     display:grid;
-    grid-template-columns:28px 1fr;
+    grid-template-columns:48px 1fr;
     align-items:center;
     gap:8px;
-    padding:2px 24px 2px 27px;
+    padding:5px 24px 5px 20px;
     user-select:none;
     -webkit-user-select:none;
     -webkit-touch-callout:none;
@@ -157,9 +157,21 @@
     text-decoration:line-through;
     color:#777;
   }
+  .check-area{
+    width:calc(100% + 20px);
+    height:100%;
+    min-height:48px;
+    margin-left:-20px;
+    padding-left:20px;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+
   .check{
     appearance:none;
-    width:21px;height:21px;
+    width:22px;height:22px;
     border:2px solid #111;
     border-radius:50%;
     margin:0;
@@ -244,9 +256,9 @@
     .tab::after{bottom:-12px;height:4px}
     .section-head{min-height:32px;padding:7px 21px 2px}
     .section-title{font-size:15.5px}
-    .task-row{grid-template-columns:26px 1fr;padding:1px 19px 1px 21px;min-height:39px;gap:7px}
+    .task-row{grid-template-columns:50px 1fr;padding:6px 18px 6px 14px;min-height:60px;gap:6px}
     .task-name{font-size:15px}
-    .check{width:20px;height:20px}
+    .check{width:22px;height:22px}
     .fab{width:54px;height:54px;border-radius:16px;font-size:29px}
   }
 
@@ -496,11 +508,24 @@
     row.dataset.id=task.id;
     row.draggable=true;
 
+    const checkArea=document.createElement("div");
+    checkArea.className="check-area";
+
     const check=document.createElement("input");
     check.type="checkbox";
     check.className="check";
     check.checked=task.completed;
     check.setAttribute("aria-label", task.completed ? "Mark incomplete":"Mark complete");
+    checkArea.appendChild(check);
+
+    checkArea.addEventListener("click",e=>{
+      e.stopPropagation();
+      if(e.target !== check){
+        check.checked = !check.checked;
+        check.dispatchEvent(new Event("change"));
+      }
+    });
+
     check.addEventListener("click",e=>e.stopPropagation());
     check.addEventListener("change",()=>{
       const becomingCompleted = check.checked;
@@ -522,9 +547,9 @@
     name.className="task-name";
     name.textContent=task.name;
 
-    row.append(check,name);
+    row.append(checkArea,name);
     row.addEventListener("click", e=>{
-      if(e.target===check) return;
+      if(e.target===check || e.target.closest(".check-area")) return;
       openEdit(task.id);
     });
 
@@ -609,7 +634,7 @@
     };
 
     row.addEventListener("touchstart",e=>{
-      if(e.target===check || e.touches.length!==1) return;
+      if(e.target===check || e.target.closest(".check-area") || e.touches.length!==1) return;
 
       const t=e.touches[0];
       touchStartX=t.clientX;
