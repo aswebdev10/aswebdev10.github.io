@@ -20,6 +20,9 @@
     --lav:#d5ddff;
     --danger:#d93025;
     --line:#ececef;
+    --task-row-height:44px;
+    --task-check-size:22px;
+    --task-font-size:16px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
@@ -75,6 +78,8 @@
     display:flex;gap:16px;align-items:center;white-space:nowrap;
   }
   .plus-inline{font-size:36px;font-weight:300;transform:translateY(-1px)}
+  .settings-btn{margin-left:auto;width:36px;height:36px;border:0;background:transparent;color:#111;display:grid;place-items:center;padding:0;cursor:pointer;font-size:25px;line-height:1;border-radius:50%;transform:translateY(-3px);-webkit-tap-highlight-color:transparent}
+  .settings-btn:active{background:rgba(0,0,0,.06)}
 
   .list-header{
     margin:0 15px 4px;
@@ -123,12 +128,12 @@
   }
   .task-list{padding:0 0 3px}
   .task-row{
-    min-height:50px;
+    min-height:var(--task-row-height);
     display:grid;
     grid-template-columns:48px 1fr;
     align-items:center;
     gap:8px;
-    padding:2px 24px 2px 20px;
+    padding:0 24px 0 20px;
     user-select:none;
     -webkit-user-select:none;
     -webkit-touch-callout:none;
@@ -160,7 +165,7 @@
   .check-area{
     width:calc(100% + 20px);
     height:100%;
-    min-height:48px;
+    min-height:var(--task-row-height);
     margin-left:-20px;
     padding-left:20px;
     display:grid;
@@ -171,7 +176,7 @@
 
   .check{
     appearance:none;
-    width:22px;height:22px;
+    width:var(--task-check-size);height:var(--task-check-size);
     border:2px solid #111;
     border-radius:50%;
     margin:0;
@@ -191,7 +196,7 @@
     transform:translateY(-1px);
   }
   .task-name{
-    font-size:15.5px;
+    font-size:var(--task-font-size);
     line-height:1.18;
     overflow-wrap:anywhere;
     cursor:pointer;
@@ -248,6 +253,14 @@
   .secondary{background:#f1f3f4}
   .primary{background:var(--blue);color:#fff}
   .delete{background:#fce8e6!important;color:var(--danger);margin-right:auto}
+  .setting-row{margin-bottom:24px}
+  .setting-label{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:10px;font-size:16px;font-weight:700}
+  .setting-value{color:#666;font-variant-numeric:tabular-nums;font-weight:600}
+  .setting-range{width:100%;accent-color:var(--blue);cursor:pointer}
+  .settings-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:30px}
+  .settings-actions button{border:0;border-radius:12px;padding:13px 18px;font-weight:700;cursor:pointer}
+  .reset-settings{background:#f1f3f4;color:#111}
+  .done-settings{background:var(--blue);color:#fff;margin-left:auto}
 
   @media (max-width:520px){
     .topbar{height:66px;padding:19px 24px 0;gap:25px}
@@ -255,10 +268,10 @@
     .tab{font-size:17px;line-height:28px}
     .tab::after{bottom:-12px;height:4px}
     .section-head{min-height:32px;padding:7px 21px 2px}
-    .section-title{font-size:15.5px}
-    .task-row{grid-template-columns:50px 1fr;padding:2px 18px 2px 14px;min-height:50px;gap:6px}
-    .task-name{font-size:15px}
-    .check{width:22px;height:22px}
+    .section-title{font-size:16px}
+    .task-row{grid-template-columns:50px 1fr;padding:0 18px 0 14px;min-height:var(--task-row-height);gap:6px}
+    .task-name{font-size:var(--task-font-size)}
+    .check{width:var(--task-check-size);height:var(--task-check-size)}
     .fab{width:54px;height:54px;border-radius:16px;font-size:29px}
   }
 
@@ -323,6 +336,7 @@
     <div class="star-logo" aria-hidden="true">★</div>
     <div class="tab active" data-tab="tasks">Tasks</div>
     <div class="tab" data-tab="completed">Completed</div>
+    <button class="settings-btn" id="settingsBtn" type="button" aria-label="Settings" title="Settings">⚙</button>
   </div>
 
   <main id="sections"></main>
@@ -352,9 +366,22 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="settingsBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="grab"></div>
+    <h2 id="settingsTitle">Settings</h2>
+    <div class="setting-row"><div class="setting-label"><span>Task row height</span><span class="setting-value" id="rowHeightValue">44 px</span></div><input class="setting-range" id="rowHeightRange" type="range" min="34" max="72" step="1" value="44" /></div>
+    <div class="setting-row"><div class="setting-label"><span>Checkbox size</span><span class="setting-value" id="checkboxSizeValue">22 px</span></div><input class="setting-range" id="checkboxSizeRange" type="range" min="14" max="36" step="1" value="22" /></div>
+    <div class="setting-row"><div class="setting-label"><span>Task font size</span><span class="setting-value" id="fontSizeValue">16 px</span></div><input class="setting-range" id="fontSizeRange" type="range" min="11" max="24" step="1" value="16" /></div>
+    <div class="settings-actions"><button type="button" class="reset-settings" id="resetSettingsBtn">Reset to default</button><button type="button" class="done-settings" id="doneSettingsBtn">Done</button></div>
+  </div>
+</div>
+
 <script>
 (() => {
   const STORAGE_KEY = "myTasksReplica_v1";
+  const SETTINGS_KEY = "myTasksReplica_settings_v1";
+  const DEFAULT_SETTINGS = Object.freeze({rowHeight:44,checkboxSize:22,fontSize:16});
   const sectionsEl = document.getElementById("sections");
   const modalBackdrop = document.getElementById("modalBackdrop");
   const form = document.getElementById("taskForm");
@@ -362,10 +389,29 @@
   const dateInput = document.getElementById("taskDate");
   const modalTitle = document.getElementById("modalTitle");
   const deleteBtn = document.getElementById("deleteBtn");
+  const settingsBtn=document.getElementById("settingsBtn"), settingsBackdrop=document.getElementById("settingsBackdrop");
+  const rowHeightRange=document.getElementById("rowHeightRange"), checkboxSizeRange=document.getElementById("checkboxSizeRange"), fontSizeRange=document.getElementById("fontSizeRange");
+  const rowHeightValue=document.getElementById("rowHeightValue"), checkboxSizeValue=document.getElementById("checkboxSizeValue"), fontSizeValue=document.getElementById("fontSizeValue");
+  const resetSettingsBtn=document.getElementById("resetSettingsBtn"), doneSettingsBtn=document.getElementById("doneSettingsBtn");
   let editingId = null;
   let longPressTimer = null;
   let touchDrag = null;
   let currentTab = "tasks";
+
+  function loadSettings(){try{const raw=localStorage.getItem(SETTINGS_KEY);if(raw)return {...DEFAULT_SETTINGS,...JSON.parse(raw)};}catch(e){} return {...DEFAULT_SETTINGS};}
+  let settings=loadSettings();
+  function applySettings(){
+    document.documentElement.style.setProperty("--task-row-height",settings.rowHeight+"px");
+    document.documentElement.style.setProperty("--task-check-size",settings.checkboxSize+"px");
+    document.documentElement.style.setProperty("--task-font-size",settings.fontSize+"px");
+    rowHeightRange.value=settings.rowHeight; checkboxSizeRange.value=settings.checkboxSize; fontSizeRange.value=settings.fontSize;
+    rowHeightValue.textContent=settings.rowHeight+" px"; checkboxSizeValue.textContent=settings.checkboxSize+" px"; fontSizeValue.textContent=settings.fontSize+" px";
+  }
+  function saveSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}
+  function openSettings(){applySettings();settingsBackdrop.classList.add("open");settingsBackdrop.setAttribute("aria-hidden","false");}
+  function closeSettings(){settingsBackdrop.classList.remove("open");settingsBackdrop.setAttribute("aria-hidden","true");}
+  function updateSetting(key,value){settings[key]=Number(value);applySettings();saveSettings();}
+  applySettings();
 
   const localDateISO = (date = new Date()) => {
     const y = date.getFullYear();
@@ -736,6 +782,14 @@
     if(task) openModal(task);
   }
 
+  settingsBtn.addEventListener("click",openSettings);
+  doneSettingsBtn.addEventListener("click",closeSettings);
+  settingsBackdrop.addEventListener("click",e=>{if(e.target===settingsBackdrop)closeSettings();});
+  rowHeightRange.addEventListener("input",()=>updateSetting("rowHeight",rowHeightRange.value));
+  checkboxSizeRange.addEventListener("input",()=>updateSetting("checkboxSize",checkboxSizeRange.value));
+  fontSizeRange.addEventListener("input",()=>updateSetting("fontSize",fontSizeRange.value));
+  resetSettingsBtn.addEventListener("click",()=>{settings={...DEFAULT_SETTINGS};applySettings();saveSettings();});
+
   document.querySelectorAll(".tab").forEach(tab=>{
     tab.addEventListener("click",()=>{
       currentTab=tab.dataset.tab;
@@ -778,7 +832,9 @@
   });
 
   document.addEventListener("keydown",e=>{
-    if(e.key==="Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    if(e.key!=="Escape") return;
+    if(settingsBackdrop.classList.contains("open")) closeSettings();
+    else if(modalBackdrop.classList.contains("open")) closeModal();
   });
 
   render();
