@@ -575,18 +575,12 @@
     check.addEventListener("click",e=>e.stopPropagation());
     check.addEventListener("change",()=>{
       const becomingCompleted = check.checked;
-      row.classList.add("completing");
       window.setTimeout(()=>{
         task.completed=becomingCompleted;
         task.order=nextOrder(sectionKey(task));
         save();
-        render({animateCompletedEntry:becomingCompleted});
-        const moved=document.querySelector(`.task-row[data-id="${CSS.escape(task.id)}"]`);
-        if(moved){
-          moved.classList.add("drop-pop");
-          moved.addEventListener("animationend",()=>moved.classList.remove("drop-pop"),{once:true});
-        }
-      },220);
+        render();
+      },400);
     });
 
     const name=document.createElement("div");
